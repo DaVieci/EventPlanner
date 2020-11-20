@@ -72,7 +72,7 @@ gulp.task('runFrontend', () => {
 gulp.task('default',
     gulp.series(
         gulp.parallel('install', 'clean'),
-        gulp.parallel('lintBackend', 'lintFrontend'),
-        'pingDatabase',
+        //gulp.parallel('lintBackend', 'lintFrontend'),
+        //'pingDatabase',
         gulp.parallel('runBackend', 'runFrontend')),
         () => {})
