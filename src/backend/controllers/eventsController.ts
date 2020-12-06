@@ -1,4 +1,4 @@
-var connection = require('mongoose');
+var connection = require('../database');
 /**
  * Controller for handling events
  */
