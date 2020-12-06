@@ -22,3 +22,5 @@ class eventController {
         );
     }
 }
+
+export default eventController;
