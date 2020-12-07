@@ -1,16 +1,26 @@
-const MongoClient = require('mongodb').MongoClient;
-const url = 'mongodb://localhost:27017';
-const dbName = 'eventplanner';
-var connection;
+//const MongoClient = require('mongodb').MongoClient;
+//const mongoose = require('mongoose');
+//const url = 'mongodb://localhost:27017';
+//const dbName = 'eventplanner';
+//const dbURI = 'mongodb://localhost:27017/eventplanner';
+//var connection;
 //var db;
+/*
+console.log(dbURI);
+
+mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(result => console.log('Connected'))
+    .catch(err => console.log(err));
+
+module.exports = mongoose;  
 
 function connectDB() {
     console.log('connectDB()');
-    connection = MongoClient.connect(url, { useUnifiedTopology: true }).then(client => {
+    connection = MongoClient.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }).then(client => {
         const db = client.db('dbName');
-        console.log('Databese ' + dbName + ' set');
-    }).then(response => {
-        console.log('Databse connection opened');
+        console.log('Database ' + dbName + ' set');
+    }).then((result) => {
+        console.log('Connected to DB');
     }).catch(error => {
         console.log(error);
     });
@@ -20,7 +30,6 @@ console.log('before connectDB');
 connectDB();
 module.exports = connection;
 
-/*
 const testDocument = ({
     title: 'ACV release',
     body: 'Beste Spiel, maybe?!',

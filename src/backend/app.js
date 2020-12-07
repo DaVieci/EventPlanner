@@ -4,10 +4,19 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+const mongoose = require('mongoose');
+const Event = require('./models/events.ts');
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
+
+// connect to mongodb
+const dbURI = 'mongodb://localhost:27017/eventplanner';
+mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(result => console.log('Connected to mongodb'))
+    .catch(err => console.log(err));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -21,6 +30,20 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
+// mongoose and mongo sandbox routes
+app.get('/add-event', (req, res) => {
+  const event = new Event({
+    title: 'new Event',
+    body: 'ibisefhesofjifheofb',
+    date: Date()
+  });
+
+  event.save()
+    .then(result => {
+      res.send(result);
+    }).catch(err => console.log(err))
+})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
