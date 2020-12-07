@@ -3,8 +3,8 @@ const url = 'mongodb://localhost:27017';
 var db;
 
 const testDocument = ({
-    title: 'Sleep',
-    body: 'pls goto sleep',
+    title: 'ACV release',
+    body: 'Beste Spiel, maybe?!',
     date: Date(),
     user: {
         name: 'Viet'
@@ -25,7 +25,6 @@ MongoClient.connect(url).then(client => {
     return insertOneDoc(client, collection, testDocument);
 }).then(response => {
     console.log('New document inserted: \n', testDocument);
-})
-.catch(error => {
+}).catch(error => {
     console.log(error);
 });
