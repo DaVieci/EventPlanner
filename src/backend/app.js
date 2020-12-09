@@ -5,7 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 const mongoose = require('mongoose');
-const Events = require('./models/events.ts');
+const Events = require('./models/events.js');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
