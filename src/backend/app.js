@@ -36,41 +36,74 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 // mongoose and mongo sandbox routes
-app.get('/add-user', (req, res) => {
-  const user = new User({
-    name: 'Viet Dang',
-    mail: 'inf19155@lehre.dhbw-stuttgart.de',
-    password: '987654321'
-  });
+// app.get('/add-user', (req, res) => {
+//   const user = new User({
+//     name: 'Viet Dang',
+//     mail: 'inf19155@lehre.dhbw-stuttgart.de',
+//     password: '987654321'
+//   });
 
-  user.save()
-    .then(result => {
-      res.send(result);
-    }).catch(err => console.log(err))
-});
+//   user.save()
+//     .then(result => {
+//       res.send(result);
+//     }).catch(err => console.log(err))
+// });
 
-app.get('/add-event', (req, res) => {
-  const event = new Event({
-    title: 'Testevent',
-    start: '20-12-2020',
-    end: '20-12-2020',
-    body: 'Das ist nur ein Testevent um die Struktur zu testen',
-    user: {
-      _id: '5fd0cb44d70ca3d0922ea950'
-    }
-  });
+// app.get('/add-event', (req, res) => {
+//   const event = new Event({
+//     title: 'Testevent',
+//     start: '20-12-2020',
+//     end: '20-12-2020',
+//     body: 'Das ist nur ein Testevent um die Struktur zu testen',
+//     user: {
+//       _id: '5fd0cb44d70ca3d0922ea950'
+//     }
+//   });
 
-  event.save()
-    .then(result => {
-      res.send(result);
-    }).catch(err => console.log(err))
-});
+//   event.save()
+//     .then(result => {
+//       res.send(result);
+//     }).catch(err => console.log(err))
+// });
 
-app.get('/all-events', (req, res) => {
-  Events.find()
+// "/events" routes
+app.get('/events', (req, res) => {
+  Event.find()
     .then(result => {
       res.send(result);
     }).catch(err => console.log(err));
+});
+
+app.post('/events', (req, res) => {
+  const event = new Event(req.body);
+
+  event.save()
+    .then(result => {
+      console.log('saved to DB');
+      res.send(result);
+    }).catch(err => {
+      console.log(err);
+    });
+});
+
+app.get('/events/:id', (req, res) => {
+  const id = req.params.id;
+  Event.findById(id)
+    .then(result => {
+      res.send(result);
+    }).catch(err => {
+      console.log(err);
+    });
+});
+
+app.delete('/events/:id', (req, res) => {
+  const id = req.params.id;
+  Event.findByIdAndDelete(id)
+    .then(result => {
+      res.send(result);
+    }).catch(err => {
+      console.log(err);
+    });
 });
 
 // catch 404 and forward to error handler
