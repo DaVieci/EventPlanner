@@ -5,6 +5,8 @@ import { ErrorComponent } from './error/error.component';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 
+import { AuthGuard } from './auth-guard.service';
+
 import {
   NbAuthComponent,
   NbLoginComponent,
@@ -13,6 +15,7 @@ import {
   NbRequestPasswordComponent,
   NbResetPasswordComponent,
 } from '@nebular/auth';
+import { EventsComponent } from './events/events.component';
 
 
 const routes: Routes = [
@@ -44,9 +47,10 @@ const routes: Routes = [
       {
         path: 'reset-password',
         component: NbResetPasswordComponent,
-      },
+      }
     ]
   },
+  { path: 'events', component: EventsComponent, canActivate: [AuthGuard] },
   { path: '**', component: ErrorComponent }
 ]
 

@@ -8,8 +8,11 @@ import { LoginComponent } from './login/login.component';
 import { ErrorComponent } from './error/error.component';
 import { SignupComponent } from './signup/signup.component';
 import { HeaderComponent } from './header/header.component';
+import { EventsComponent } from './events/events.component';
 
 import { AppRoutingModule } from './app-routing.module';
+
+import { AuthGuard } from './auth-guard.service';
 
 import { NbThemeModule } from '@nebular/theme';
 import { 
@@ -36,7 +39,8 @@ import { NbPasswordAuthStrategy, NbAuthModule, NbAuthJWTToken } from '@nebular/a
     ErrorComponent,
     LoginComponent,
     SignupComponent,
-    HeaderComponent
+    HeaderComponent,
+    EventsComponent
   ],
   imports: [
     BrowserModule,
@@ -62,21 +66,21 @@ import { NbPasswordAuthStrategy, NbAuthModule, NbAuthJWTToken } from '@nebular/a
             class: NbAuthJWTToken,
             key: 'token'  // this parameter tells where to look for the token
           },
-          baseEndpoint: 'http://unser-backend.com/app-api',   // our backend!
+          baseEndpoint: 'http://localhost:3000/',   // here goes our backend!
           login: {
-            endpoint: '/auth/login',
+            endpoint: 'user/login',
             method: 'post',
             redirect: {
-              success: '/dashboard',
+              success: '/events',
               failure: null,  // stay on the same page
             }
           },
           register: {
-            endpoint: '/auth/register',
+            endpoint: 'user/register',
             method: 'post',
           },
           logout: {
-            endpoint: '/auth/logout',
+            endpoint: 'user/logout',
             method: 'post',
           },
           requestPass: {
@@ -92,7 +96,9 @@ import { NbPasswordAuthStrategy, NbAuthModule, NbAuthJWTToken } from '@nebular/a
       forms: {},
     }) 
   ],
-  providers: [],
+  providers: [
+    AuthGuard
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
