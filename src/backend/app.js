@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 const mongoose = require('mongoose');
+
 const Event = require('./models/events.js');
 const User = require('./models/users.js');
 
@@ -35,38 +36,41 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-// mongoose and mongo sandbox routes
-// app.get('/add-user', (req, res) => {
-//   const user = new User({
-//     name: 'Viet Dang',
-//     mail: 'inf19155@lehre.dhbw-stuttgart.de',
-//     password: '987654321'
-//   });
+// user routes
+app.get('/users', (req, res) => {
+  User.find()
+    .then(result => {
+      res.send(result);
+    }).catch(err => console.log(err));
+});
 
-//   user.save()
-//     .then(result => {
-//       res.send(result);
-//     }).catch(err => console.log(err))
-// });
+app.post('/users', (req, res) => {
+  const user = new User(req.body);
 
-// app.get('/add-event', (req, res) => {
-//   const event = new Event({
-//     title: 'Testevent',
-//     start: '20-12-2020',
-//     end: '20-12-2020',
-//     body: 'Das ist nur ein Testevent um die Struktur zu testen',
-//     user: {
-//       _id: '5fd0cb44d70ca3d0922ea950'
-//     }
-//   });
+  user.save()
+    .then(result => {
+      console.log('user created');
+      res.send(result);
+    }).catch(err => console.log(err));
+});
 
-//   event.save()
-//     .then(result => {
-//       res.send(result);
-//     }).catch(err => console.log(err))
-// });
+app.get('/users/:id', (req, res) => {
+  const id = req.params.id;
+  User.findById(id)
+    .then(result => {
+      res.send(result);
+    }).catch(err => console.log(err));
+});
 
-// "/events" routes
+app.delete('/users/:id', (req, res) => {
+  const id = req.params.id;
+  User.findByIdAndDelete(id)
+    .then(result => {
+      res.send(result);
+    }).catch(err => console.log(err));
+});
+
+// event routes
 app.get('/events', (req, res) => {
   Event.find()
     .then(result => {
