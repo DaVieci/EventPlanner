@@ -9,6 +9,7 @@ const mongoose = require('mongoose');
 var indexRouter = require('./routes/index');
 var eventRoutes = require('./routes/eventRoutes');
 var userRoutes = require('./routes/userRoutes');
+var categoryRoutes = require('./routes/categoryRoutes');
 
 var app = express();
 
@@ -43,6 +44,9 @@ app.use(userRoutes);
 
 // event routes
 app.use(eventRoutes);
+
+// category routes
+app.use(categoryRoutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
