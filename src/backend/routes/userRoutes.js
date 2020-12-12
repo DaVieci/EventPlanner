@@ -9,8 +9,9 @@ router.get('/users', (req, res) => {
         res.send(result);
       }).catch(err => console.log(err));
 });
-  
-router.post('/users', (req, res) => {
+
+//create new user
+router.post('/users/create', (req, res) => {
     const user = new User(req.body);
   
     user.save()
@@ -19,6 +20,11 @@ router.post('/users', (req, res) => {
         res.send(result);
       }).catch(err => console.log(err));
 });
+
+//user login
+router.post('/users/login', (req, res) => {
+  
+})
   
 router.get('/users/:id', (req, res) => {
     const id = req.params.id;
