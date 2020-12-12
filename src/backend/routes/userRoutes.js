@@ -31,7 +31,7 @@ router.post('/users/sign-up', async (req, res) => {
         const username = req.body.email;
         const user = {email: username};
 
-        const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+        const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '7200s'});
         res.send({token: accessToken});
       }).catch(err => console.log(err));
   } catch {res.status(500).send()}
@@ -52,7 +52,7 @@ router.post('/users/login', async (req, res) => {
       const username = req.body.email;
       const user = {email: username};
 
-      const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+      const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '7200s'});
       res.send({token: accessToken});
     } else {
       res.send('not allowed');
