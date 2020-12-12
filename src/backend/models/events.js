@@ -26,7 +26,7 @@ const eventSchema = new Schema({
         required: false
     },
     user: {
-        type: Object,
+        type: String,
         required: true
     }
 }, { timestamps: true })

@@ -71,7 +71,12 @@ router.get('/users/:id', (req, res) => {
       }).catch(err => console.log(err));
 });
 
-//delete use by id
+//user logout
+router.post('/users/logout', (req, res) => {
+  res.status(200).send('logout successful');
+})
+
+//delete user by id
 router.delete('/users/:id', (req, res) => {
     const id = req.params.id;
     User.findByIdAndDelete(id)
