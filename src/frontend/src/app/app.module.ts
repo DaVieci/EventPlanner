@@ -4,15 +4,12 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
-import { LoginComponent } from './login/login.component';
 import { ErrorComponent } from './error/error.component';
-import { SignupComponent } from './signup/signup.component';
 import { HeaderComponent } from './header/header.component';
-import { EventsComponent } from './events/events.component';
 
 import { AppRoutingModule } from './app-routing.module';
 
-import { AuthGuard } from './auth-guard.service';
+import { AuthGuard } from './services/auth-guard.service';
 
 import { NbThemeModule } from '@nebular/theme';
 import { 
@@ -37,10 +34,7 @@ import { NbPasswordAuthStrategy, NbAuthModule, NbAuthJWTToken } from '@nebular/a
     AppComponent,
     NavbarComponent,
     ErrorComponent,
-    LoginComponent,
-    SignupComponent,
-    HeaderComponent,
-    EventsComponent
+    HeaderComponent
   ],
   imports: [
     BrowserModule,
@@ -78,10 +72,6 @@ import { NbPasswordAuthStrategy, NbAuthModule, NbAuthJWTToken } from '@nebular/a
           register: {
             endpoint: '/api/users',
             method: 'post',
-            redirect: {
-              success: '/',
-              failure: null,  // stay on the same page
-            }
           },
           logout: {
             endpoint: '/api/logout',
