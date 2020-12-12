@@ -1,7 +1,13 @@
 <nb-layout-header fixed>
     <nb-icon *ngIf="user_loggedIn" (click)="toggleSidebar()" class="sidebar-toggle" icon="menu-2-outline"></nb-icon>
     <h2 *ngIf="!user_loggedIn">{{title}}</h2>
-      
+    <button nbButton 
+        *ngIf="user_loggedIn"
+        shape="semi-round" 
+        (click)="logout_user()"
+        >
+        <nb-icon icon="log-out-outline"></nb-icon>
+    Logout</button>
     <nb-user
         *ngIf="user_loggedIn"
         shape="semi-round"

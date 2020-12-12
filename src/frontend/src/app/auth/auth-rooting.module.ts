@@ -7,6 +7,8 @@ import { SignupComponent } from './signup.component';
 
 import { NbAuthComponent, NbLogoutComponent } from '@nebular/auth';
 
+import { AuthGuard } from './../services/auth-guard.service';
+
 
 const routes: Routes = [
   {
@@ -14,7 +16,7 @@ const routes: Routes = [
       children: [
           { path: 'login', component: LoginComponent },
           { path: 'signup', component: SignupComponent },
-          { path: 'logout', component: NbLogoutComponent }
+          { path: 'logout', component: NbLogoutComponent, canActivate: [AuthGuard] }
       ]
   }
 ];

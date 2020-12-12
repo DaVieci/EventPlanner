@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { NbAuthJWTToken, NbAuthService } from '@nebular/auth';
+import { NbAuthJWTToken, NbAuthService, NbTokenService } from '@nebular/auth';
 import { NbSidebarService } from '@nebular/theme';
 
 @Component({
@@ -15,7 +15,8 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     private readonly sidebarService: NbSidebarService, 
-    private authService: NbAuthService
+    private authService: NbAuthService,
+    private tokenService: NbTokenService
     ) {
       this.authService.onTokenChange()
         .subscribe((token: NbAuthJWTToken) => {
@@ -30,6 +31,13 @@ export class HeaderComponent implements OnInit {
   toggleSidebar(): boolean {
     this.sidebarService.toggle();
     return false;
+  }
+
+  logout_user() {
+    this.tokenService.clear();
+    setTimeout(()=>{
+      window.location.reload();
+    }, 100);
   }
 
   ngOnInit(): void {
