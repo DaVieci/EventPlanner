@@ -7,10 +7,16 @@ import { NbRegisterComponent } from '@nebular/auth';
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss']
 })
-export class SignupComponent extends NbRegisterComponent {
+export class SignupComponent extends NbRegisterComponent implements OnInit {
 
   //constructor() { }
 
-  //ngOnInit(): void {}
+  ngOnInit(): void {
+    this.setPageTransition();
+  }
+
+  setPageTransition(): void {
+    if (!(sessionStorage.getItem("pageTransition")==="true")) sessionStorage.setItem("pageTransition","true");
+  }
 
 }

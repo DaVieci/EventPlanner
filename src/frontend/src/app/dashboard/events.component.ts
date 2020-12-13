@@ -11,6 +11,14 @@ export class EventsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.refreshPageOnTransition();
+  }
+
+  refreshPageOnTransition(): void {
+    if (!(sessionStorage.getItem("pageTransition")==="false")) {
+      sessionStorage.setItem("pageTransition", "false");
+      window.location.reload();
+    }
   }
 
 }
