@@ -11,7 +11,7 @@ router.get('/events', authenticateToken, (req, res) => {
       }).catch(err => console.log(err));
 });
   
-router.post('/events', (req, res) => {
+router.post('/events', authenticateToken, (req, res) => {
     const event = new Event(req.body);
   
     event.save()

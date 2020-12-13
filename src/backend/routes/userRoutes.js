@@ -18,6 +18,12 @@ router.get('/users', (req, res) => {
 //create new user
 router.post('/users/sign-up', async (req, res) => {
 
+  const user = await User.findOne({email: req.body.email});
+
+  if (user != null) {
+    return res.send('This e-mail address is already in use');
+  }
+
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     req.body.password = hashedPassword;
