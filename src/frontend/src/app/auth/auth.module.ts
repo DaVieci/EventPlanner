@@ -8,8 +8,17 @@ import { SignupComponent } from './signup.component';
 
 import { NbAuthModule, NbPasswordAuthStrategy, NbAuthJWTToken } from '@nebular/auth';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
-import { NbLayoutModule, NbButtonModule, NbFormFieldModule, NbInputModule, NbCardModule, NbIconModule, NbUserModule, NbAlertModule, NbCheckboxModule } from '@nebular/theme';
-//import { AuthGuard } from '../services/auth-guard.service';
+import {
+  NbLayoutModule,
+  NbButtonModule,
+  NbFormFieldModule,
+  NbInputModule,
+  NbCardModule,
+  NbIconModule,
+  NbUserModule,
+  NbAlertModule,
+  NbCheckboxModule
+} from '@nebular/theme';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 

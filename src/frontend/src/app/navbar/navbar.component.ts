@@ -11,8 +11,7 @@ export class NavbarComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void { }
 
   items: NbMenuItem[] = [
     {
@@ -26,26 +25,32 @@ export class NavbarComponent implements OnInit {
       link: '/events',
       children: [
         {
-          title: 'Upcoming Events',
-          icon: 'book-outline',
+          title: 'Dashboard',
+          icon: 'calendar-outline',
           link: '/events'
         },
         {
-          title: 'Previous Events',
-          icon: 'book-outline',
-          link: '/events'
+          title: 'History',
+          icon: 'archive-outline',
+          link: '/events/history'
         },
         {
-          title: 'All',
-          icon: 'book-outline',
-          link: '/events'
+          title: 'Create',
+          icon: 'plus-square-outline',
+          link: '/events/add'
         },
       ]
     },
     {
-      title: 'Logout',
-      icon: 'log-out-outline',
-      link: '/auth/logout'
+      title: 'About',
+      icon: 'people-outline',
+      link: '/about'
+    },
+    {
+      title: 'Github',
+      icon: 'github-outline',
+      url: 'https://github.com/DaVieci/EventPlanner',
+      target: '_blank'
     }
   ];
 

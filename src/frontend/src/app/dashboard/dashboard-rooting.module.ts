@@ -9,8 +9,9 @@ const routes: Routes = [
   {
       path: '', component: EventsComponent
       /*children: [
-          { path: 'add', component: AddEventComponent },
-          { path: 'edit/:id', component: EditEventComponent }
+          { path: 'history', component: HistoryComponent },
+          { path: 'create', component: CreateEventComponent },
+          { path: 'edit', component: EditEventComponent }
       ] */
   }
 ];
