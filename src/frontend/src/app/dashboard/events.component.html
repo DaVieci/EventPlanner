@@ -1,6 +1,102 @@
-<p>EVENT</p>
-<ul>
-        <!--<li *ngFor="let event of events$ | async">
-                <p>{{event.name}}</p>
-        </li>-->
-</ul>
+<!-- Tabelle, falls man die Daten angezeigt haben möchte
+<table class="table table-striped">
+        <thead>
+                <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Start</th>
+                        <th>End</th>
+                        <th>Body</th>
+                        <th>User</th>
+                </tr>
+        </thead>
+        <tbody>
+                <tr *ngFor="let event of events">
+                        <td>{{ event._id }}</td>
+                        <td>{{ event.title }}</td>
+                        <td>{{ event.start }}</td>
+                        <td>{{ event.end }}</td>
+                        <td>{{ event.body }}</td>
+                        <td>{{ event.user }}</td>
+                </tr>
+        </tbody>
+</table>
+Ende Tabelle -->
+
+<!-- Nur als Dummy Element für Test-Zwecke! Gern nach belieben rauslöschen
+<div class="event_cards">
+<nb-flip-card>
+        <nb-card-front>
+                <nb-card status="primary" size="small">
+                        <nb-card-header>TITEL VON EVENT</nb-card-header>
+                        <nb-card-body>
+                                <img src="./../../assets/event_pics/city1.jpg" alt="city" class="event_pic">
+                        </nb-card-body>
+                        <nb-card-footer>From 01.01.1001 at 01:01 to 10.10.0110 at 10:10</nb-card-footer>
+                </nb-card>
+        </nb-card-front>
+        <nb-card-back>
+                <nb-card accent="primary" size="small">
+                        <nb-card-header>TITEL VON EVENT</nb-card-header>
+                        <nb-card-body>
+                                Kurzbeschreibung: Das ist eine Beispielbeschreibung für das Dummy-Element <br>
+                                Kategorie: Privates Treffen <br>
+                                Status: Gelb
+                        </nb-card-body>
+                        <nb-card-footer>Hier kommen 2 Buttons rein: Edit & Delete</nb-card-footer>
+                </nb-card>
+        </nb-card-back>
+</nb-flip-card>
+</div>
+Ende Dummy -->
+
+<div class='date_picker'>
+<input nbInput class="date_input" shape="semi-round" placeholder="Pick Date Range" [nbDatepicker]="dateTimePicker">
+<nb-rangepicker #dateTimePicker></nb-rangepicker>
+<nb-select multiple shape="semi-round" placeholder="Categories">
+        <nb-option value="1">Option 1</nb-option>
+        <nb-option value="2">Option 2</nb-option>
+        <nb-option value="3">Option 3</nb-option>
+        <nb-option value="4">Option 4</nb-option>
+</nb-select>
+<button nbButton shape="semi-round" (click)="filter_events()">
+        <nb-icon icon="funnel-outline"></nb-icon>
+        Filter
+</button>
+</div>
+
+<br>
+
+<div class="event_cards" *ngFor="let event of events">
+<nb-flip-card>
+        <nb-card-front>
+                <nb-card status="primary" size="small">
+                        <nb-card-header>{{event.title}}</nb-card-header>
+                        <nb-card-body>
+                                <img src="./../../assets/event_pics/festival1.jpg" alt="1" class="event_pic">
+                        </nb-card-body>
+                        <nb-card-footer>From {{ event.start }} to {{ event.end }}</nb-card-footer>
+                </nb-card>
+        </nb-card-front>
+        <nb-card-back>
+                <nb-card accent="primary" size="small">
+                        <nb-card-header>{{ event.title }}</nb-card-header>
+                        <nb-card-body>
+                                Kurzbeschreibung: {{ event.body }} <br>
+                                Kategorie: {{ event.category }} <br>
+                                Status: {{ event.status }}
+                        </nb-card-body>
+                        <nb-card-footer>
+                                <button nbButton shape="semi-round" (click)="edit_event(event.id)">
+                                        <nb-icon icon="edit-2-outline"></nb-icon>
+                                        Edit
+                                </button>
+                                <button nbButton shape="semi-round" (click)="delete_event(event.id)">
+                                        <nb-icon icon="trash-2-outline"></nb-icon>
+                                        Delete
+                                </button>
+                        </nb-card-footer>
+                </nb-card>
+        </nb-card-back>
+</nb-flip-card>
+</div>
