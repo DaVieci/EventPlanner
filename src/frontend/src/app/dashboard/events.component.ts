@@ -26,10 +26,23 @@ export class EventsComponent implements OnInit {
             this.bearer_token = 'Bearer '+this.user_token;
           }
         });
-    console.log("TEST!!!!!!");
-    this.getEvents(this.bearer_token);
 
-  }
+      var requestOptions = {
+        method: 'GET',
+        headers: {
+          Authorization: this.bearer_token
+        }
+      };
+
+      fetch("/api/events", requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => {
+          //ggf http status 403 & 401 verarbeiten
+          console.log('error', error)
+        });
+
+    }
 
   ngOnInit(): void {
     this.refreshPageOnTransition();
@@ -41,21 +54,4 @@ export class EventsComponent implements OnInit {
       window.location.reload();
     }
   }
-
-  getEvents(bearer_token: String): void {
-    console.log("getEvents call!");
-    var url = this.backend_url;
-    var method = "GET";
-    var req = new XMLHttpRequest();
- 
-    req.onreadystatechange = function () {
-          console.log("BEFORE readyState");
-          if (this.readyState == 4 && this.status == 200) {
-              console.log(this);
-          }
-      req.open(method, url+'/events?authorization='+bearer_token, true);
-      req.send();
-    }
-  }
-
 }
