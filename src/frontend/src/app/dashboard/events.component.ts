@@ -12,9 +12,6 @@ export class EventsComponent implements OnInit {
   private user_token: String;
   private bearer_token = ''; 
 
-  private backend_url = 'http://localhost:3000';
-
-
   constructor(
     private authService: NbAuthService,
     private http: HttpClient
@@ -36,7 +33,10 @@ export class EventsComponent implements OnInit {
 
       fetch("/api/events", requestOptions)
         .then(response => response.text())
-        .then(result => console.log(result))
+        .then(result => {
+          //html rendern für event info...
+          console.log(result)
+        })
         .catch(error => {
           //ggf http status 403 & 401 verarbeiten
           console.log('error', error)
