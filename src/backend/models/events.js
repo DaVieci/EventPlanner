@@ -19,7 +19,7 @@ const eventSchema = new Schema({
         required: false
     },
     image: {
-        type: Base64,
+        type: String,
         required: false
     },
     category: {

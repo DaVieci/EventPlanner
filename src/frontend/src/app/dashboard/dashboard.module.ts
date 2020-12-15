@@ -6,12 +6,14 @@ import { DashboardRootingModule } from './dashboard-rooting.module';
 import {EventsComponent } from './events.component';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { NbLayoutModule, NbButtonModule, NbFormFieldModule, NbInputModule, NbCardModule, NbIconModule, NbUserModule, NbAlertModule, NbCheckboxModule } from '@nebular/theme';
+import { NbLayoutModule, NbButtonModule, NbFormFieldModule, NbInputModule, NbCardModule, NbIconModule, NbUserModule, NbAlertModule, NbCheckboxModule, NbDatepickerModule, NbSelectModule } from '@nebular/theme';
+import { AddEventComponent } from './add-event/add-event.component';
 
 
 @NgModule({
   declarations: [
-    EventsComponent
+    EventsComponent,
+    AddEventComponent
   ],
   imports: [
     CommonModule,
@@ -26,7 +28,9 @@ import { NbLayoutModule, NbButtonModule, NbFormFieldModule, NbInputModule, NbCar
     FormsModule,
     RouterModule,
     NbAlertModule,
-    NbCheckboxModule
+    NbCheckboxModule,
+    NbDatepickerModule,
+    NbSelectModule
   ]
 })
 export class DashboardModule { }

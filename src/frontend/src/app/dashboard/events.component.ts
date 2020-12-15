@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { NbAuthJWTToken, NbAuthService } from '@nebular/auth';
+import { NbDatepicker, NbDateService, NbRangepickerComponent } from '@nebular/theme';
 
 @Component({
   selector: 'app-events',
@@ -12,17 +13,29 @@ export class EventsComponent implements OnInit {
   private user_token: String;
   private bearer_token: any;
 
+  min: Date;
+  max: Date;
+
   events: {
     _id: String,
     title: String,
     start: String,
     end: String,
     body: String,
-    user: String
+    user: String,
+    picture: String,
+    category: String,
+    status: String
   };
+
+  categories: {
+    _id: String,
+    type: String
+  }
 
   constructor(
     private authService: NbAuthService,
+    protected dateService: NbDateService<Date>,
   ) {
     this.authService.onTokenChange()
         .subscribe((token: NbAuthJWTToken) => {
@@ -32,21 +45,32 @@ export class EventsComponent implements OnInit {
           }
         });
     console.log("CONSTRUCTOR CALL");
+    console.log();
+    //this.min = this.dateService;
+    //this.max = this.dateService.addMonth(this.dateService.today(), 1);
     }
 
   ngOnInit(): void {
     console.log("ONINIT CALL");
     if(!this.refreshPageOnTransition()) {
-      this.getEvents();
+      if(!(sessionStorage.getItem("AddEditDeleteCallOnEvent")==="false")) {
+        console.log("call getEvents");
+        this.getEvents();
+        console.log(this.events);
+        this.getCategories();
+        sessionStorage.setItem("AddEditDeleteCallOnEvent", "false");
+      }
     }
   }
 
   refreshPageOnTransition(): boolean {
     if (!(sessionStorage.getItem("pageTransition")==="false")) {
+      console.log("refresh!");
       sessionStorage.setItem("pageTransition", "false");
       window.location.reload();
       return true;
     } else {
+      console.log("kein refresh!");
       return false;
     }
   }
@@ -62,15 +86,38 @@ export class EventsComponent implements OnInit {
     fetch("/api/events", requestOptions)
       .then(response => response.text())
       .then(result => {
-        //html rendern für event info...
         console.log(result);
         this.events = JSON.parse(result);
+        // Event json wird im Storage gespeichert
+        sessionStorage.setItem("EventsJson", JSON.stringify(this.events));
       })
       .catch(error => {
         //ggf http status 403 & 401 verarbeiten
         console.log('error', error)
       });
+  }
 
+  getCategories(): void {
+    // hier passiert das gleiche wie bei getEvents()
+  }
+
+  filter_events(): void {
+    // Was hier passiert: String mit Events wird aus dem Storage geladen und wieder in eine JSON umgewandelt
+    var session_events = sessionStorage.getItem("EventsJson");
+    console.log(session_events);
+    var json_events = JSON.parse(session_events);
+    console.log(json_events);
+    //
+    // Hier wird die JSON nach dem Date-Picker und Kategorien gefiltert!!!
+    //
+    this.events = json_events;
+  }
+
+  edit_event(event_id: String) {
+
+  }
+
+  delete_event(event_id: String) {
 
   }
 }

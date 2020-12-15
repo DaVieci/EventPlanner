@@ -3,17 +3,13 @@ import { CommonModule } from '@angular/common';
 
 import { Routes, RouterModule } from '@angular/router';
 import { EventsComponent } from './events.component';
+import { AddEventComponent } from './add-event/add-event.component';
 
 
 const routes: Routes = [
-  {
-      path: '', component: EventsComponent
-      /*children: [
-          { path: 'history', component: HistoryComponent },
-          { path: 'create', component: CreateEventComponent },
-          { path: 'edit', component: EditEventComponent }
-      ] */
-  }
+  { path: '', component: EventsComponent },
+  { path: 'edit:id', component: AddEventComponent },
+  { path: 'add', component: AddEventComponent }
 ];
 
 @NgModule({
