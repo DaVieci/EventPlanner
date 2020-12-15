@@ -2,20 +2,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router'
 
 import { ErrorComponent } from './error/error.component';
-import { LoginComponent } from './auth/login.component';
-import { SignupComponent } from './auth/signup.component';
-import { EventsComponent } from './dashboard/events.component';
+
 
 import { AuthGuard } from './services/auth-guard.service';
 
-import {
-  NbAuthComponent,
-  NbLoginComponent,
-  NbRegisterComponent,
-  NbLogoutComponent,
-  NbRequestPasswordComponent,
-  NbResetPasswordComponent,
-} from '@nebular/auth';
 
 const dashboardModule = () => import('./dashboard/dashboard.module').then(x => x.DashboardModule);
 const authModule = () => import('./auth/auth.module').then(x => x.AuthModule);

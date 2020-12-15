@@ -33,9 +33,11 @@ export class EventsComponent implements OnInit {
     type: String
   }
 
+  selectedItem: any[];
+
   constructor(
     private authService: NbAuthService,
-    protected dateService: NbDateService<Date>,
+    protected dateService: NbDateService<Date>
   ) {
     this.authService.onTokenChange()
         .subscribe((token: NbAuthJWTToken) => {
@@ -45,34 +47,41 @@ export class EventsComponent implements OnInit {
           }
         });
     console.log("CONSTRUCTOR CALL");
-    console.log();
     //this.min = this.dateService;
     //this.max = this.dateService.addMonth(this.dateService.today(), 1);
+    //select.selectedChange<>;
     }
 
   ngOnInit(): void {
     console.log("ONINIT CALL");
     if(!this.refreshPageOnTransition()) {
       if(!(sessionStorage.getItem("AddEditDeleteCallOnEvent")==="false")) {
-        console.log("call getEvents");
         this.getEvents();
-        console.log(this.events);
-        this.getCategories();
         sessionStorage.setItem("AddEditDeleteCallOnEvent", "false");
+        // evtl. neuer if-Zweig für Kategorien, falls Add/Delete Category implementiert werden soll!
+        this.getCategories();
       }
     }
+    this.loadCategoriesAfterOneSecond();
   }
 
   refreshPageOnTransition(): boolean {
     if (!(sessionStorage.getItem("pageTransition")==="false")) {
-      console.log("refresh!");
       sessionStorage.setItem("pageTransition", "false");
       window.location.reload();
       return true;
     } else {
-      console.log("kein refresh!");
       return false;
     }
+  }
+
+  loadCategoriesAfterOneSecond(): void {
+    console.log("load cats");
+    setTimeout(()=>{
+      var session_cats = sessionStorage.getItem("CategoriesJson");
+      var json_cats = JSON.parse(session_cats);
+      this.categories = json_cats;
+    }, 1000);
   }
 
   getEvents(): void {
@@ -82,31 +91,40 @@ export class EventsComponent implements OnInit {
         Authorization: this.bearer_token
       }
     };
-
     fetch("/api/events", requestOptions)
       .then(response => response.text())
       .then(result => {
         console.log(result);
-        this.events = JSON.parse(result);
-        // Event json wird im Storage gespeichert
-        sessionStorage.setItem("EventsJson", JSON.stringify(this.events));
+        var json_event = JSON.parse(result);
+        sessionStorage.setItem("EventsJson", JSON.stringify(json_event));
       })
       .catch(error => {
         //ggf http status 403 & 401 verarbeiten
-        console.log('error', error)
+        console.log('error', error);
       });
   }
 
   getCategories(): void {
-    // hier passiert das gleiche wie bei getEvents()
+    var requestOptions = {
+      method: 'GET'
+    };
+    fetch("/api/categories", requestOptions)
+    .then(response => response.text())
+    .then(result => {
+      console.log(result);
+      var json_cat = JSON.parse(result);
+      sessionStorage.setItem("CategoriesJson", JSON.stringify(json_cat));
+    })
+    .catch(error => {
+      //ggf http status 403 & 401 verarbeiten
+      console.log('error', error);
+    });
   }
 
   filter_events(): void {
     // Was hier passiert: String mit Events wird aus dem Storage geladen und wieder in eine JSON umgewandelt
     var session_events = sessionStorage.getItem("EventsJson");
-    console.log(session_events);
     var json_events = JSON.parse(session_events);
-    console.log(json_events);
     //
     // Hier wird die JSON nach dem Date-Picker und Kategorien gefiltert!!!
     //

@@ -9,8 +9,6 @@ import { NbLoginComponent } from '@nebular/auth';
 })
 export class LoginComponent extends NbLoginComponent implements OnInit {
 
-  //constructor() { }
-
   ngOnInit(): void {
     this.setPageTransition();
   }
