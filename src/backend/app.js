@@ -6,10 +6,12 @@ var logger = require('morgan');
 
 const mongoose = require('mongoose');
 
+// routes import
 var indexRouter = require('./routes/index');
 var eventRoutes = require('./routes/eventRoutes');
 var userRoutes = require('./routes/userRoutes');
 var categoryRoutes = require('./routes/categoryRoutes');
+var imageRoutes = require('./routes/imageRoutes');
 
 var app = express();
 
@@ -41,6 +43,9 @@ app.use(eventRoutes);
 
 // category routes
 app.use(categoryRoutes);
+
+// image routes
+app.use(imageRoutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
