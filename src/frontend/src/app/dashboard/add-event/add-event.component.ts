@@ -80,21 +80,25 @@ export class AddEventComponent implements OnInit {
   }
 
   uploadImage(f: NgForm): void {
-      const requestOptions = {
-        method: 'POST',
-        headers: {
-          Authorization: this.bearer_token,
-          'Content-Type': 'application/json;charset=utf-8'
-        },
-        body: f.value.base64Img
-        
-      };
-      fetch("/api/images", requestOptions)
-        .then(response => response.text())
-        .catch(error => {
-          //ggf http status 403 & 401 verarbeiten
-          console.log('error', error);
-        });
+
+    const imgBody = {
+      base64img: sessionStorage.getItem("ImageBase64")
+    };
+
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        Authorization: this.bearer_token,
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      body: JSON.stringify(imgBody)
+    };
+    fetch("/api/images", requestOptions)
+      .then(response => response.text())
+      .catch(error => {
+        //ggf http status 403 & 401 verarbeiten
+        console.log('error', error);
+      });
   }
 
   uploadEvent(f: NgForm): void {

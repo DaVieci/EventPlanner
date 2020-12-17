@@ -12,10 +12,12 @@ router.get('/images/:imgUrl', authenticateToken, (req, res) => {
         }).catch(err => console.log(err));
 })
 
-router.post('/images', (req, res) => {
+router.post('/images', authenticateToken, (req, res) => {
     const image = new Image(req.body);
     image.save()
         .then(result => {
             res.send('image uploaded');
         }).catch(err => console.log(err));
 })
+
+module.exports = router;
