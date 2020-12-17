@@ -94,7 +94,6 @@ export class AddEventComponent implements OnInit {
         status: f.value.stat
       };
       const str_events = JSON.stringify(json_events);
-      console.log("Das ist der String mit den fugging events: "+str_events);
       const requestOptions = {
         method: 'POST',
         headers: {
