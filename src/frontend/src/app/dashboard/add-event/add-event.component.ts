@@ -79,7 +79,27 @@ export class AddEventComponent implements OnInit {
     this.categories = json_cats;
   }
 
-  uploadImage(f: NgForm): void {
+  //upload Event und image combined
+  uploadEventWithImage(f: NgForm): void {
+
+
+      var imgURL = this.uploadImage()
+
+      while(imgURL === "") {
+        console.log("looooooop");
+      }
+
+      if (!(imgURL === "")) {
+        this.uploadEvent(f, imgURL);
+      } else {
+        console.log("IF/ELSE: something went wrong");
+      }
+
+  }
+
+  uploadImage(): string {
+
+    var img_url = "";
 
     const imgBody = {
       base64img: sessionStorage.getItem("ImageBase64")
@@ -95,13 +115,21 @@ export class AddEventComponent implements OnInit {
     };
     fetch("/api/images", requestOptions)
       .then(response => response.text())
+      .then(response => {
+        //response = response.replace('"', '');
+        var imgURL = '/api/images/'+response;
+        console.log(imgURL);
+        img_url = imgURL;
+      })
       .catch(error => {
         //ggf http status 403 & 401 verarbeiten
         console.log('error', error);
       });
+
+      return img_url;
   }
 
-  uploadEvent(f: NgForm): void {
+  uploadEvent(f: NgForm, imgURL: string): void {
     if (!(f.value.title==="") && !(f.value.start_date==="") && !(f.value.start_time==="") && !(f.value.end_date==="") && !(f.value.end_time==="")) {
       this.missing_inputs = false;
       const json_events = {
@@ -111,7 +139,7 @@ export class AddEventComponent implements OnInit {
         end_date: f.value.end_date,
         end_time: f.value.end_time,
         body: f.value.body,
-        image: this.imageURL,
+        image: imgURL,
         category: f.value.cat,
         user: this.user.email,
         status: f.value.stat

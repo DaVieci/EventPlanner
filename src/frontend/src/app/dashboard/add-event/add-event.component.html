@@ -2,7 +2,7 @@
     <nb-card-body>
         <nb-card-header><h4 style="text-align: center;">Add new Event</h4></nb-card-header>
         <br><br><br>
-        <form #f="ngForm" (ngSubmit)="uploadEvent(f)" novalidate>
+        <form #f="ngForm" (ngSubmit)="uploadEventWithImage(f)" novalidate>
             <input nbInput fullWidth name="title" ngModel required shape="semi-round" placeholder="Title">
             <br><br><br>
             Start:
@@ -18,7 +18,6 @@
             Image:
             <input nbInput type="file" name="img_inp" ngModel id="inpimg" shape="semi-round" style="width: 100%;" (change)="showImageOnCanvas()" accept="image/png, image/jpeg">
             <br><br><canvas *ngIf="canv_visible" id="canvimg"></canvas><br>
-            <!--<button nbButton *ngIf="delimg_button" shape="semi-round" (click)="uploadImage()">Upload image</button>-->
             <button nbButton *ngIf="delimg_button" shape="semi-round" (click)="deleteImageUpload()"><nb-icon icon="trash-outline"></nb-icon>Delete image</button>
             <br><br><br>
             Category:
@@ -47,5 +46,6 @@
             </button>
             <br><br>
         </form>
+        <!-- <button nbButton *ngIf="delimg_button" shape="semi-round" (click)="uploadImage()">Upload image</button> -->
     </nb-card-body>
 </nb-card>
