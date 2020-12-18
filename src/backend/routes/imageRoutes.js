@@ -16,7 +16,7 @@ router.post('/images', authenticateToken, (req, res) => {
     const image = new Image(req.body);
     image.save()
         .then(result => {
-            res.send('image uploaded');
+            res.send(result._id);
         }).catch(err => console.log(err));
 })
 
