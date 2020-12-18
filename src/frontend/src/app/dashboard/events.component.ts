@@ -58,13 +58,15 @@ export class EventsComponent implements OnInit {
     console.log("ONINIT CALL");
     if(!this.refreshPageOnTransition()) {
       if(!(sessionStorage.getItem("AddEditDeleteCallOnEvent")==="false")) {
-        this.getEvents();
         sessionStorage.setItem("AddEditDeleteCallOnEvent", "false");
+        this.getEvents();
         // evtl. neuer if-Zweig für Kategorien, falls Add/Delete Category implementiert werden soll!
         this.getCategories();
       }
+      setTimeout(()=>{
+        this.loadEventsAndCategories();
+      }, 1000);
     }
-    this.loadCategoriesAfterOneSecond();
   }
 
   refreshPageOnTransition(): boolean {
@@ -77,12 +79,23 @@ export class EventsComponent implements OnInit {
     }
   }
 
+  loadEventsAndCategories(): void {
+    var session_cats = sessionStorage.getItem("CategoriesJson");
+    var json_cats = JSON.parse(session_cats);
+    this.categories = json_cats;
+    (<HTMLButtonElement>document.getElementById("filter_button")).click();
+  }
+
   loadCategoriesAfterOneSecond(): void {
     console.log("load cats");
     setTimeout(()=>{
-      var session_cats = sessionStorage.getItem("CategoriesJson");
-      var json_cats = JSON.parse(session_cats);
-      this.categories = json_cats;
+      
+    }, 1000);
+  }
+  loadEventsAfterOneSecond(): void {
+    console.log("load events");
+    setTimeout(()=>{
+      
     }, 1000);
   }
 
@@ -136,7 +149,7 @@ export class EventsComponent implements OnInit {
     var date_range = {};
     if (!(f.value.date_range===null)) {
       date_range = f.value.date_range;
-      if (Object.keys(date_range).length) {
+      if (Object.keys(f.value.date_range).length) {
         s_date_iso = new Date(f.value.date_range.start);
         if (f.value.date_range.end) {
           e_date_iso = new Date(f.value.date_range.end);
@@ -194,19 +207,23 @@ export class EventsComponent implements OnInit {
 
   }
 
-  delete_event(event_id: String) {
-    var requestOptions = {
-      method: 'DELETE',
-      headers: {
-        Authorization: this.bearer_token
-      }
-    };
-    fetch(`/api/events/${event_id}`, requestOptions)
-      .then(result => {
-        console.log(result);
-        sessionStorage.setItem("AddEditDeleteCallOnEvent", "true");
-        this.ngOnInit();
-      })
-      .catch(err => console.log(err));
+  delete_event(event_id: String, index: number) {
+    var userselection = confirm("Are you sure you want to delete this event?");
+    if (userselection === true) {
+      var requestOptions = {
+        method: 'DELETE',
+        headers: {
+          Authorization: this.bearer_token
+        }
+      };
+      fetch(`/api/events/${event_id}`, requestOptions)
+        .then(result => {
+          console.log(result);
+          delete this.events;
+          sessionStorage.setItem("AddEditDeleteCallOnEvent", "true");
+          this.ngOnInit();
+        })
+        .catch(err => console.log(err));
+    }
   }
 }
