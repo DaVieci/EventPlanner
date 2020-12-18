@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { NbAuthJWTToken, NbAuthService } from '@nebular/auth';
 import { NbDatepicker, NbDateService, NbRangepickerComponent } from '@nebular/theme';
 
@@ -37,6 +38,8 @@ export class EventsComponent implements OnInit {
 
   selectedItem: any[];
 
+  OneDayInMillisec = 86400000;
+
   constructor(
     private authService: NbAuthService,
     protected dateService: NbDateService<Date>
@@ -49,22 +52,21 @@ export class EventsComponent implements OnInit {
           }
         });
     console.log("CONSTRUCTOR CALL");
-    //this.min = this.dateService;
-    //this.max = this.dateService.addMonth(this.dateService.today(), 1);
-    //select.selectedChange<>;
     }
 
   ngOnInit(): void {
     console.log("ONINIT CALL");
     if(!this.refreshPageOnTransition()) {
       if(!(sessionStorage.getItem("AddEditDeleteCallOnEvent")==="false")) {
-        this.getEvents();
         sessionStorage.setItem("AddEditDeleteCallOnEvent", "false");
+        this.getEvents();
         // evtl. neuer if-Zweig für Kategorien, falls Add/Delete Category implementiert werden soll!
         this.getCategories();
       }
+      setTimeout(()=>{
+        this.loadEventsAndCategories();
+      }, 1000);
     }
-    this.loadCategoriesAfterOneSecond();
   }
 
   refreshPageOnTransition(): boolean {
@@ -77,12 +79,23 @@ export class EventsComponent implements OnInit {
     }
   }
 
+  loadEventsAndCategories(): void {
+    var session_cats = sessionStorage.getItem("CategoriesJson");
+    var json_cats = JSON.parse(session_cats);
+    this.categories = json_cats;
+    (<HTMLButtonElement>document.getElementById("filter_button")).click();
+  }
+
   loadCategoriesAfterOneSecond(): void {
     console.log("load cats");
     setTimeout(()=>{
-      var session_cats = sessionStorage.getItem("CategoriesJson");
-      var json_cats = JSON.parse(session_cats);
-      this.categories = json_cats;
+      
+    }, 1000);
+  }
+  loadEventsAfterOneSecond(): void {
+    console.log("load events");
+    setTimeout(()=>{
+      
     }, 1000);
   }
 
@@ -123,33 +136,94 @@ export class EventsComponent implements OnInit {
     });
   }
 
-  filter_events(): void {
-    // Was hier passiert: String mit Events wird aus dem Storage geladen und wieder in eine JSON umgewandelt
+  filter_events(f: NgForm): void {
+    delete this.events;
     var session_events = sessionStorage.getItem("EventsJson");
-    var json_events = JSON.parse(session_events);
-    //
-    // Hier wird die JSON nach dem Date-Picker und Kategorien gefiltert!!!
-    //
-    this.events = json_events;
+
+    var s_date_iso;
+    var e_date_iso;
+    var s_day_msec;
+    var e_day_msec;
+    var filtered_events;
+
+    var date_range = {};
+    if (!(f.value.date_range===null)) {
+      date_range = f.value.date_range;
+      if (Object.keys(f.value.date_range).length) {
+        s_date_iso = new Date(f.value.date_range.start);
+        if (f.value.date_range.end) {
+          e_date_iso = new Date(f.value.date_range.end);
+        } else {
+          e_date_iso = s_date_iso;
+        }
+        s_day_msec = s_date_iso.getTime();
+        e_day_msec = e_date_iso.getTime() + this.OneDayInMillisec - 1;
+      }
+    }
+
+    var cat_arr = [];
+    if (!(f.value.cats==="")) cat_arr = f.value.cats;
+
+    if (!Object.keys(date_range).length && !Object.keys(cat_arr).length) {
+      filtered_events = JSON.parse(session_events);
+    } else if (Object.keys(date_range).length && !Object.keys(cat_arr).length) {
+      filtered_events = JSON.parse(session_events)
+        .filter(({start_date}) => this.checkDateBetweenStartAndEnd(start_date,s_day_msec,e_day_msec));
+    } else if (!Object.keys(date_range).length && Object.keys(cat_arr).length) {
+      filtered_events = JSON.parse(session_events)
+        .filter(({category}) => cat_arr.includes(category));
+    } else if (Object.keys(date_range).length && Object.keys(cat_arr).length) {
+      filtered_events = JSON.parse(session_events)
+        .filter(({start_date, category}) => this.checkDateBetweenStartAndEnd(start_date,s_day_msec,e_day_msec) && cat_arr.includes(category));
+    } else {
+      console.log("FATAL ERROR! This code part should have never been reached. Have a look at the following:");
+      console.log("Date Picker: "+f.value.date_range);
+      console.log("Categories Select: "+f.value.cats);
+    }
+    this.events = filtered_events;
+  }
+
+  checkDateBetweenStartAndEnd(date: string, start: number, end: number): boolean {
+    var json_date = new Date(date);
+    if ((start<=json_date.getTime()) && (json_date.getTime()<=end)) {
+      return true;
+    } else {
+      return false;
+    } 
+  }
+
+  formatDateToIso(date: string): string {
+    var d = new Date(date);
+    var month = '' + (d.getMonth() + 1);
+    var day = '' + d.getDate();
+    var year = d.getFullYear();
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+    var date_iso = [year, month, day].join('-');
+    return date_iso;
   }
 
   edit_event(event_id: String) {
 
   }
 
-  delete_event(event_id: String) {
-    var requestOptions = {
-      method: 'DELETE',
-      headers: {
-        Authorization: this.bearer_token
-      }
-    };
-    fetch(`/api/events/${event_id}`, requestOptions)
-      .then(result => {
-        console.log(result);
-        sessionStorage.setItem("AddEditDeleteCallOnEvent", "true");
-        this.ngOnInit();
-      })
-      .catch(err => console.log(err));
+  delete_event(event_id: String, index: number) {
+    var userselection = confirm("Are you sure you want to delete this event?");
+    if (userselection === true) {
+      var requestOptions = {
+        method: 'DELETE',
+        headers: {
+          Authorization: this.bearer_token
+        }
+      };
+      fetch(`/api/events/${event_id}`, requestOptions)
+        .then(result => {
+          console.log(result);
+          delete this.events;
+          sessionStorage.setItem("AddEditDeleteCallOnEvent", "true");
+          this.ngOnInit();
+        })
+        .catch(err => console.log(err));
+    }
   }
 }
