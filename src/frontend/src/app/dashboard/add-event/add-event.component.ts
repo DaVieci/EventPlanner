@@ -96,7 +96,7 @@ export class AddEventComponent implements OnInit {
         this.success_msg = true;
       } else {
         console.log(this.id_event); 
-        this.getEventById(this.id_event);
+        this.getEventById();
         setTimeout(()=>{
           this.loadEventInInputs();
         }, 1000);
@@ -123,22 +123,21 @@ export class AddEventComponent implements OnInit {
   }
 
   //upload Event und image combined
-  async uploadEventWithImage(f: NgForm): Promise <void> {
-      this.uploadImage();
-      setTimeout(() => {
+  uploadEventWithImage(f: NgForm): void {
+      //this.uploadImage();
         console.log('Hier sollte die Image ID sein!!!\n' + this.imgId);
         this.uploadEvent(f, this.imgId);
-      }, 1000);
+      
   }
 
-  getEventById(id: string): void {
+  getEventById(): void {
     var requestOptions = {
       method: 'GET',
       headers: {
         Authorization: this.bearer_token
       }
     };
-    fetch(`/api/events/${id}`, requestOptions)
+    fetch(`/api/events/${this.id_event}`, requestOptions)
       .then(response => response.text()) 
       .then(result => {
         console.log(result);
@@ -199,35 +198,70 @@ export class AddEventComponent implements OnInit {
       });
   }
 
+  setInputValueToFormValue(f: NgForm): void {
+    if (!(f.value.title==="")) this.title_value = f.value.title;
+    if (!(f.value.start_date==="")) this.sdate_value = f.value.start_date;
+    if (!(f.value.start_time==="")) this.stime_value = f.value.start_time;
+    if (!(f.value.end_date==="")) this.edate_value = f.value.end_date;
+    if (!(f.value.end_time==="")) this.etime_value = f.value.end_time;
+    if (!(f.value.body==="")) this.body_value = f.value.body;
+    if (!(f.value.cat==="")) this.sel_cat = f.value.cat;
+    if (!(f.value.stat==="")) this.sel_stat = f.value.stat;
+  }
+
   uploadEvent(f: NgForm, imgId: string): void {
-    if (!(f.value.title==="") && !(f.value.start_date==="") && !(f.value.start_time==="") && !(f.value.end_date==="") && !(f.value.end_time==="")) {
+    this.setInputValueToFormValue(f);
+    console.log(this.stime_value,this.etime_value);
+    var sd = this.sdate_value.toString();
+    var st = this.stime_value.toString();
+    var ed = this.edate_value.toString();
+    var et = this.etime_value.toString();
+    console.log(sd,st,ed,et);
+    console.log(this.body_value);
+    if (!(this.title_value==="") && !(sd==="") && !(st==="") && !(ed==="") && !(et==="")) {
       this.error_msg = false;
+      console.log("HALLO");
       const json_events = {
-        title: f.value.title,
-        start_date: f.value.start_date,
-        start_time: f.value.start_time,
-        end_date: f.value.end_date,
-        end_time: f.value.end_time,
-        body: f.value.body,
-        image: "",  //vorerst noch nix
-        category: f.value.cat,
+        title: this.title_value,
+        start_date: this.sdate_value,
+        start_time: this.stime_value,
+        end_date: this.edate_value,
+        end_time: this.etime_value,
+        body: this.body_value,
+        image: "",  // hier sollte der Link reinkommen später
+        category: this.sel_cat,
         user: this.user.email,
-        status: f.value.stat
+        status: this.sel_stat
       };
       const str_events = JSON.stringify(json_events);
+      let push_method;
+      let push_api;
+      if (this.id_event) {
+        push_method = 'PUT';
+        push_api = `/api/events/${this.id_event}`;
+      } else {
+        push_method = 'POST';
+        push_api = "/api/events";
+      }
+      console.log(push_method);
+      console.log(push_api);
       const requestOptions = {
-        method: 'POST',
+        method: push_method,
         headers: {
           Authorization: this.bearer_token,
           'Content-Type': 'application/json;charset=utf-8'
         },
         body: str_events
       };
-      fetch("/api/events", requestOptions)
+      fetch(push_api, requestOptions)
         .then(response => response.text())
         .then(result => {
+          if (this.id_event) {
+            sessionStorage.setItem("EventEditted", "true");
+          } else {
+            sessionStorage.setItem("EventCreated", "true");
+          }
           sessionStorage.setItem("AddEditDeleteCallOnEvent", "true");
-          sessionStorage.setItem("EventCreated", "true");
           this.ngOnInit();
         })
         .catch(error => {

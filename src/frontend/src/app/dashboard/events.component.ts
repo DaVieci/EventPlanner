@@ -37,13 +37,10 @@ export class EventsComponent implements OnInit {
     type: String
   }
 
-<<<<<<< HEAD
   image_path = '../frontend/src/assets/event_pics/';
 
   imageID: string;
-=======
-  cat_arr: [];
->>>>>>> AddEditDeleteCallOnEvent
+  sel_cats: string;
 
   selectedItem: any[];
 
