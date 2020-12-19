@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { NbAuthJWTToken, NbAuthService } from '@nebular/auth';
 import { NbDatepicker, NbDateService, NbRangepickerComponent } from '@nebular/theme';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-events',
@@ -36,9 +37,13 @@ export class EventsComponent implements OnInit {
     type: String
   }
 
+<<<<<<< HEAD
   image_path = '../frontend/src/assets/event_pics/';
 
   imageID: string;
+=======
+  cat_arr: [];
+>>>>>>> AddEditDeleteCallOnEvent
 
   selectedItem: any[];
 
@@ -49,7 +54,7 @@ export class EventsComponent implements OnInit {
 
   constructor(
     private authService: NbAuthService,
-    protected dateService: NbDateService<Date>
+    private router: Router
   ) {
     this.authService.onTokenChange()
         .subscribe((token: NbAuthJWTToken) => {
@@ -91,19 +96,6 @@ export class EventsComponent implements OnInit {
     var json_cats = JSON.parse(session_cats);
     this.categories = json_cats;
     (<HTMLButtonElement>document.getElementById("filter_button")).click();
-  }
-
-  loadCategoriesAfterOneSecond(): void {
-    console.log("load cats");
-    setTimeout(()=>{
-      
-    }, 1000);
-  }
-  loadEventsAfterOneSecond(): void {
-    console.log("load events");
-    setTimeout(()=>{
-      
-    }, 1000);
   }
 
   getEvents(): void {
@@ -223,22 +215,11 @@ export class EventsComponent implements OnInit {
     } 
   }
 
-  formatDateToIso(date: string): string {
-    var d = new Date(date);
-    var month = '' + (d.getMonth() + 1);
-    var day = '' + d.getDate();
-    var year = d.getFullYear();
-    if (month.length < 2) month = '0' + month;
-    if (day.length < 2) day = '0' + day;
-    var date_iso = [year, month, day].join('-');
-    return date_iso;
-  }
-
   edit_event(event_id: String) {
-
+    this.router.navigate(['/events/edit', event_id]);
   }
 
-  delete_event(event_id: String, index: number) {
+  delete_event(event_id: String) {
     var userselection = confirm("Are you sure you want to delete this event?");
     if (userselection === true) {
       var requestOptions = {
