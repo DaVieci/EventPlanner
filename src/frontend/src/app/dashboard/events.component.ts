@@ -42,6 +42,9 @@ export class EventsComponent implements OnInit {
 
   OneDayInMillisec = 86400000;
 
+  imgID: any;
+  imgURL: string;
+
   constructor(
     private authService: NbAuthService,
     protected dateService: NbDateService<Date>
@@ -117,8 +120,9 @@ export class EventsComponent implements OnInit {
       .then(()=>{
         var jsonString = sessionStorage.getItem("EventsJson");
         var json = JSON.parse(jsonString);
-        //this.getImage(json[0].image);
-        this.imageID = json[0].image;
+        this.imgID = json[0].image;
+        this.imgURL = "/api/images/" + this.imgID;
+        console.log("ImageURL: "+this.imgURL);
       })
       .catch(error => {
         //ggf http status 403 & 401 verarbeiten
@@ -126,22 +130,22 @@ export class EventsComponent implements OnInit {
       });
   }
 
-  // getImage(): void {
-  //   var requestOptions = {
-  //     method: 'GET',
-  //     headers: {
-  //       Authorization: this.bearer_token
-  //     }
-  //   };
-  //   fetch("/api/images/5fdce7bed248582623866e8f", requestOptions)
-  //     .then(response => {
-  //       console.log('PENIS'+response);
-  //     })
-  //     .catch(error => {
-  //       //ggf http status 403 & 401 verarbeiten
-  //       console.log('error', error);
-  //     });
-  // }
+  getImage(): void {
+    var requestOptions = {
+      method: 'GET',
+      headers: {
+        Authorization: this.bearer_token
+      }
+    };
+    fetch(this.imgURL, requestOptions)
+      .then(res => {
+        //something with res.body
+      })
+      .catch(error => {
+        //ggf http status 403 & 401 verarbeiten
+        console.log('error', error);
+      });
+  }
 
   getCategories(): void {
     var requestOptions = {
