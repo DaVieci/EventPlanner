@@ -1,5 +1,7 @@
 # EventPlaner
+A website for planning events
 
-- Hello there!
+### Developed by:
+Bela Föhrenbacher (1794796) and Thanh Viet Dang(7035821)
 
-    General Kenobi *tzutzutzut*! -
+## Commands
