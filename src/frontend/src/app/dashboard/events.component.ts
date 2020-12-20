@@ -36,16 +36,10 @@ export class EventsComponent implements OnInit {
     _id: String,
     type: String
   }
-
-  imageID: string;
+  
   sel_cats: string;
 
-  selectedItem: any[];
-
   OneDayInMillisec = 86400000;
-
-  imgID: any;
-  imgURL: string;
 
   img_mime: string;
 
@@ -153,6 +147,12 @@ export class EventsComponent implements OnInit {
     });
   }
 
+  /**
+   * Converts the given base64 img code from the json file into a real picture and returns the url.
+   * If no image is set in the specific event, it will show a sample image from the assets folder.
+   * @param img_code base64 code given from the json
+   * @returns url to the newly generated picture
+   */
   convertBase64ToImageURL(img_code: string): any {
     if (img_code) {
       var image_blob = this.convertDataUrlToBlob(img_code);
@@ -164,6 +164,11 @@ export class EventsComponent implements OnInit {
     }
   }
 
+  /**
+   * Generates a blob from the given base64 code 
+   * @param url base64 image code
+   * @returns a blob
+   */
   convertDataUrlToBlob(url: string): Blob {
     const arr = url.split(',');
     const mime = arr[0].match(/:(.*?);/)[1];
