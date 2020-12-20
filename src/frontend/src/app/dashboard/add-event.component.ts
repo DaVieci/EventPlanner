@@ -58,10 +58,6 @@ export class AddEventComponent implements OnInit {
   image_from_json: string;
   imageLink: string;
   imageURL: string;
-  base64Img: string;
-
-  imgId: string;
-  image_path: string = "./../../assets/event_pics/";
 
   canv_visible: boolean;
   delimg_button: boolean;
@@ -122,14 +118,6 @@ export class AddEventComponent implements OnInit {
     var json_cats = JSON.parse(session_cats);
     this.categories = json_cats;
   }
-
-  //upload Event und image combined
-  uploadEventWithImage(f: NgForm): void {
-    //this.uploadImage();
-    if (this.imageURL) this.createImage();
-    //this.uploadEvent(f);
-      
-  }
   
   createImage(): void {
     var image_blob = this.convertDataUrlToBlob();
@@ -164,7 +152,6 @@ export class AddEventComponent implements OnInit {
     fetch(`/api/events/${this.id_event}`, requestOptions)
       .then(response => response.text()) 
       .then(result => {
-        console.log(result);
         var json_event = JSON.parse(result);
         sessionStorage.setItem("EditEventJson", JSON.stringify(json_event));
       })
@@ -182,7 +169,7 @@ export class AddEventComponent implements OnInit {
     this.etime_value = json_event.end_time;
     this.body_value = json_event.body;
     this.image_from_json = json_event.image;
-    this.showImageOnCanvas();
+    if (this.image_from_json) this.showImageOnCanvas();
     this.sel_cat = json_event.category;
     this.sel_stat = json_event.status;
   }
@@ -197,31 +184,6 @@ export class AddEventComponent implements OnInit {
     (<HTMLInputElement>document.getElementById("inpimg")).value = null;
   }
 
-  uploadImage(): void {
-    const imgBody = {
-      base64img: sessionStorage.getItem("ImageBase64")
-    };
-    const requestOptions = {
-      method: 'POST',
-      headers: {
-        Authorization: this.bearer_token,
-        'Content-Type': 'application/json;charset=utf-8'
-      },
-      body: JSON.stringify(imgBody)
-    };
-    fetch("/api/images", requestOptions)
-      .then(response => response.text())
-      .then(response => {
-        response = response.replace(new RegExp('"', 'g'), '');
-        this.imgId = response;
-        console.log(this.imgId);
-      })
-      .catch(error => {
-        //ggf http status 403 & 401 verarbeiten
-        console.log('error', error);
-      });
-  }
-
   setInputValueToFormValue(f: NgForm): void {
     if (!(f.value.title==="")) this.title_value = f.value.title;
     if (!(f.value.start_date==="")) this.sdate_value = f.value.start_date;
@@ -234,12 +196,16 @@ export class AddEventComponent implements OnInit {
   }
 
   uploadEvent(f: NgForm): void {
+    if (this.image_from_json) {
+      if (!(this.imageURL)) this.imageURL = this.image_from_json;
+    }
     this.setInputValueToFormValue(f);
     console.log(this.stime_value,this.etime_value);
-    var sd = this.sdate_value.toString();
-    var st = this.stime_value.toString();
-    var ed = this.edate_value.toString();
-    var et = this.etime_value.toString();
+    var sd="", st="", ed="", et="";
+    if (this.sdate_value) sd = this.sdate_value.toString();
+    if (this.stime_value) st = this.stime_value.toString();
+    if (this.edate_value) ed = this.edate_value.toString();
+    if (this.etime_value) et = this.etime_value.toString();
     console.log(sd,st,ed,et);
     console.log(this.body_value);
     if (!(this.title_value==="") && !(sd==="") && !(st==="") && !(ed==="") && !(et==="")) {
@@ -252,7 +218,7 @@ export class AddEventComponent implements OnInit {
         end_date: this.edate_value,
         end_time: this.etime_value,
         body: this.body_value,
-        image: "",  // hier sollte der Link reinkommen später
+        image: this.imageURL, 
         category: this.sel_cat,
         user: this.user.email,
         status: this.sel_stat
@@ -337,7 +303,6 @@ export class AddEventComponent implements OnInit {
       background.src = imglink;
     }else {
       background.src = URL.createObjectURL(image.files[0]);
-      
     }
     background.onload = function () {
       var canvas = <HTMLCanvasElement>document.getElementById("canvimg");
@@ -346,8 +311,8 @@ export class AddEventComponent implements OnInit {
       canvas.height = background.height;
       context.drawImage(background, 0, 0);
       if(!(imglink)) {
-          var imgurl = canvas.toDataURL('image/jpeg');
-          sessionStorage.setItem("ImageBase64", imgurl);
+        var imgurl = canvas.toDataURL('image/jpeg');
+        sessionStorage.setItem("ImageBase64", imgurl);
       }
     }
     this.imageURL = sessionStorage.getItem("ImageBase64");
@@ -360,15 +325,9 @@ export class AddEventComponent implements OnInit {
     var context = canvas.getContext("2d");
     context.clearRect(0, 0, canvas.width, canvas.height);
     this.imageURL = "";
+    this.image_from_json = "";
     this.delimg_button = false;
     this.canv_visible = false;
-    if (this.image_from_json) this.deleteOldImageFromJson();
-  }
-
-  deleteOldImageFromJson(): void {
-    var path_to_img = this.image_from_json;
-    this.image_from_json = "";
-    // delete file from path_to_img
   }
 
 }

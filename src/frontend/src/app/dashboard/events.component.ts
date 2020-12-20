@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { NbAuthJWTToken, NbAuthService } from '@nebular/auth';
 import { Router } from '@angular/router';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-events',
@@ -36,8 +37,6 @@ export class EventsComponent implements OnInit {
     type: String
   }
 
-  image_path = '../frontend/src/assets/event_pics/';
-
   imageID: string;
   sel_cats: string;
 
@@ -48,6 +47,8 @@ export class EventsComponent implements OnInit {
   imgID: any;
   imgURL: string;
 
+  img_mime: string;
+
   /**
    * Initialize the route service to navigate to other sites and the authentication service to get the user token which holds their full name and email address.
    * @param authService authentication service provided by Nebular
@@ -55,7 +56,8 @@ export class EventsComponent implements OnInit {
    */
   constructor(
     private authService: NbAuthService,
-    private router: Router
+    private router: Router,
+    private sanitizer: DomSanitizer
   ) {
     this.authService.onTokenChange()
         .subscribe((token: NbAuthJWTToken) => {
@@ -125,36 +127,11 @@ export class EventsComponent implements OnInit {
         var json_event = JSON.parse(result);
         sessionStorage.setItem("EventsJson", JSON.stringify(json_event));
       })
-      .then(()=>{
-        var jsonString = sessionStorage.getItem("EventsJson");
-        var json = JSON.parse(jsonString);
-        this.imgID = json[0].image;
-        this.imgURL = this.image_path + this.imgID;
-        console.log("ImageURL: "+this.imgURL);
-      })
       .catch(error => {
         //ggf http status 403 & 401 verarbeiten
         console.log('error', error);
       });
   }
-
-  // getImage(): void {
-  //   var requestOptions = {
-  //     method: 'GET',
-  //     headers: {
-  //       Authorization: this.bearer_token
-  //     }
-  //   };
-  //   fetch(this.imgURL, requestOptions)
-  //     .then(res => {
-  //       //something with res.body
-  //       console.log(res.body);
-  //     })
-  //     .catch(error => {
-  //       //ggf http status 403 & 401 verarbeiten
-  //       console.log('error', error);
-  //     });
-  // }
 
   /**
    * Sets the options for a get api and calls it.
@@ -167,7 +144,6 @@ export class EventsComponent implements OnInit {
     fetch("/api/categories", requestOptions)
     .then(response => response.text())
     .then(result => {
-      console.log(result);
       var json_cat = JSON.parse(result);
       sessionStorage.setItem("CategoriesJson", JSON.stringify(json_cat));
     })
@@ -176,6 +152,31 @@ export class EventsComponent implements OnInit {
       console.log('error', error);
     });
   }
+
+  convertBase64ToImageURL(img_code: string): any {
+    if (img_code) {
+      var image_blob = this.convertDataUrlToBlob(img_code);
+      const objectURL = URL.createObjectURL(image_blob);
+      const url = this.sanitizer.bypassSecurityTrustResourceUrl(objectURL);
+      return url;
+    } else {
+      return "./../../assets/event_pics/festival1.jpg";
+    }
+  }
+
+  convertDataUrlToBlob(url: string): Blob {
+    const arr = url.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    console.log(mime);
+    this.img_mime = mime;
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], {type: mime});
+}
 
   /**
    * Takes the data inputs of date und category to apply filtering on the json file that contains all events.
