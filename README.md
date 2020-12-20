@@ -5,3 +5,6 @@ A website for planning events
 Bela Föhrenbacher (1794796) and Thanh Viet Dang(7035821)
 
 ## Commands
+|   Command |   Description |
+|   :------ |   :---------: |
+|   `gulp`  |   Installs modules for frontend and backend and starts the server |
