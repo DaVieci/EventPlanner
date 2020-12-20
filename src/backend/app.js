@@ -39,9 +39,6 @@ app.use(eventRoutes);
 // category routes
 app.use(categoryRoutes);
 
-// image routes
-app.use(imageRoutes);
-
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
